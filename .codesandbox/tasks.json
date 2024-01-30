@@ -12,12 +12,12 @@
     "build": {
       "name": "build",
       "command": "npm run build",
-      "runAtStart": false
+      "runAtStart": true
     },
     "dev": {
       "name": "dev",
       "command": "npm run dev",
-      "runAtStart": true
+      "runAtStart": false
     },
     "generate": {
       "name": "generate",
@@ -27,7 +27,7 @@
     "preview": {
       "name": "preview",
       "command": "npm run preview",
-      "runAtStart": false
+      "runAtStart": true
     },
     "postinstall": {
       "name": "postinstall",
