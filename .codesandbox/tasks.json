@@ -4,6 +4,10 @@
     {
       "name": "Install Dependencies",
       "command": "npm install"
+    },
+    {
+      "name": "Build",
+      "command": "npm run build"
     }
   ],
 
@@ -12,7 +16,7 @@
     "build": {
       "name": "build",
       "command": "npm run build",
-      "runAtStart": true
+      "runAtStart": false
     },
     "dev": {
       "name": "dev",
