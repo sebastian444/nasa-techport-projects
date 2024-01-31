@@ -1,7 +1,9 @@
 <template>
   <NuxtLayout>
     <v-app>
-      <NuxtPage />
+      <v-container>
+        <NuxtPage />
+      </v-container>
     </v-app>
   </NuxtLayout>
 </template>
@@ -11,16 +13,17 @@ import { DateTime } from "luxon";
 const projects = useProjects();
 
 const dateFormat = "yyyy-MM-dd";
-const lastDaysInterval = ref(7);
+const lastDays = useLastDays();
+
 var todayDate = DateTime.now();
 const updatedSince = computed(() => {
-  return todayDate.minus({ days: lastDaysInterval.value }).toFormat(dateFormat);
+  return todayDate.minus({ days: parseInt(lastDays.value) || 1 }).toFormat(dateFormat);
 });
 
 const { data } = await useFetch(`https://techport.nasa.gov/api/projects`, {
   query: {
     updatedSince,
-  },
+  }
 });
 
 if (data?.value?.projects) {
