@@ -17,13 +17,15 @@ const lastDays = useLastDays();
 
 var todayDate = DateTime.now();
 const updatedSince = computed(() => {
-  return todayDate.minus({ days: parseInt(lastDays.value) || 1 }).toFormat(dateFormat);
+  return todayDate
+    .minus({ days: parseInt(lastDays.value) || 1 })
+    .toFormat(dateFormat);
 });
 
 const { data } = await useFetch(`https://techport.nasa.gov/api/projects`, {
   query: {
     updatedSince,
-  }
+  },
 });
 
 if (data?.value?.projects) {
