@@ -2,6 +2,9 @@
   <NuxtLayout>
     <v-app>
       <v-container>
+        <p>{{ status }}</p>
+        <p>{{ baseProjectsData?.totalCount }}</p>
+        <p>{{ projects.length }}</p>
         <NuxtPage />
       </v-container>
     </v-app>
@@ -22,31 +25,41 @@ const updatedSince = computed(() => {
     .toFormat(dateFormat);
 });
 
-const { data } = await useFetch(`https://techport.nasa.gov/api/projects`, {
+const { data: baseProjectsData, status } = await useFetch(`/api/projects`, {
   query: {
     updatedSince,
   },
 });
 
-if (data?.value?.projects) {
-  for (const project of data.value.projects) {
-    const alreadyExists = projects.value.find(
-      (p) => p.projectId === project.projectId,
-    );
+watch(
+  baseProjectsData,
+  async (data) => {
+    console.log("before if", data?.totalCount);
 
-    if (alreadyExists) {
-      continue;
+    if (data?.projects) {
+      for (const project of data.projects) {
+        const alreadyExists = projects.value.find(
+          (p) => p.projectId === project.projectId,
+        );
+
+        if (alreadyExists) {
+          continue;
+        }
+
+        const { data: projectDetails } = await useFetch(
+          `/api/projects/${project.projectId}`,
+        );
+
+        if (projectDetails?.value?.project) {
+          Object.assign(project, projectDetails.value.project);
+        }
+      }
     }
 
-    const { data: projectDetails } = await useFetch(
-      `https://techport.nasa.gov/api/projects/${project.projectId}`,
-    );
+    console.log("before update of project", data?.totalCount);
 
-    if (projectDetails?.value?.project) {
-      Object.assign(project, projectDetails.value.project);
-    }
-  }
-}
-
-projects.value = data.value.projects;
+    projects.value = data?.projects;
+  },
+  { deep: true },
+);
 </script>
