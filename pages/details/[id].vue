@@ -117,7 +117,14 @@
       >website</v-btn
     >
   </div>
-  <div v-else>Project not found</div>
+  <div v-else>
+    <v-alert
+      icon="mdi-alert"
+      text="Project not found"
+      type="warning"
+      variant="tonal"
+    />
+  </div>
 </template>
 
 <script setup>

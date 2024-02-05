@@ -2,9 +2,11 @@
   <NuxtLayout>
     <v-app>
       <v-container>
-        <p>{{ status }}</p>
-        <p>{{ baseProjectsData?.totalCount }}</p>
-        <p>{{ projects.length }}</p>
+        <p>fetched data {{ data?.totalCount }}</p>
+        <p>projects {{ projects.length }}</p>
+        <p>itemsPerPage {{ itemsPerPage }}</p>
+        <p>lastDays {{ lastDays }}</p>
+        <p>updatedSince {{ updatedSince }}</p>
         <NuxtPage />
       </v-container>
     </v-app>
@@ -14,52 +16,102 @@
 <script setup>
 import { DateTime } from "luxon";
 const projects = useProjects();
+const apiStatus = useApiStatus();
 
 const dateFormat = "yyyy-MM-dd";
 const lastDays = useLastDays();
+const itemsPerPage = useItemsPerPage();
 
-var todayDate = DateTime.now();
+const todayDate = DateTime.now();
 const updatedSince = computed(() => {
   return todayDate
     .minus({ days: parseInt(lastDays.value) || 1 })
     .toFormat(dateFormat);
 });
 
-const { data: baseProjectsData, status } = await useFetch(`/api/projects`, {
-  query: {
-    updatedSince,
-  },
-});
+const { data, status, error } = await useAsyncData(
+  "projects",
+  async () => {
+    let response;
+    try {
+      console.log("1: before fetch", updatedSince.value);
+      response = await $fetch("/api/projects", {
+        query: {
+          updatedSince: updatedSince.value,
+        },
+      });
+    } catch (error) {
+      const msg = `Could not fetch projects`;
 
-watch(
-  baseProjectsData,
-  async (data) => {
-    console.log("before if", data?.totalCount);
+      console.error(msg, error);
 
-    if (data?.projects) {
-      for (const project of data.projects) {
+      throw new Error(msg);
+    }
+
+    if (response.projects) {
+      for (const project of response.projects) {
         const alreadyExists = projects.value.find(
           (p) => p.projectId === project.projectId,
         );
 
         if (alreadyExists) {
+          console.log("already existing! not fetching", project.projectId);
           continue;
         }
 
-        const { data: projectDetails } = await useFetch(
-          `/api/projects/${project.projectId}`,
-        );
+        console.log("3.*:projectId", project.projectId);
+        let projectDetails;
+        try {
+          projectDetails = await $fetch(`/api/projects/${project.projectId}`);
+        } catch (error) {
+          const msg = `Could not fetch project details`;
 
-        if (projectDetails?.value?.project) {
-          Object.assign(project, projectDetails.value.project);
+          console.error(msg, project.projectId, error);
+
+          throw new Error(msg);
+        }
+
+        console.log("3.*:details response", !!projectDetails);
+
+        if (projectDetails?.project) {
+          Object.assign(project, projectDetails.project);
         }
       }
     }
 
-    console.log("before update of project", data?.totalCount);
-
-    projects.value = data?.projects;
+    console.log("--> end");
+    return response;
   },
-  { deep: true },
+  { watch: [updatedSince] },
+);
+
+watch(
+  status,
+  (newStatus) => {
+    apiStatus.value = newStatus;
+  },
+  { immediate: true },
+);
+
+watch(
+  data,
+  (newData) => {
+    if (!newData?.projects) {
+      return;
+    }
+
+    for (const project of newData?.projects) {
+      const alreadyExists = projects.value.find(
+        (p) => p.projectId === project.projectId,
+      );
+
+      if (alreadyExists) {
+        continue;
+      }
+      console.log("adding project", project.projectId);
+      projects.value.push(project);
+    }
+  },
+  { immediate: true },
 );
 </script>
