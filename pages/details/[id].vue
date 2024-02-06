@@ -132,9 +132,7 @@ const route = useRoute();
 
 const projectsDetails = useProjectsDetails();
 
-const project = computed(() => {
-  return projectsDetails.value.find((p) => {
-    return p.projectId === parseInt(route.params.id);
-  });
+const project = projectsDetails.value.find((p) => {
+  return p.projectId === parseInt(route.params.id);
 });
 </script>

@@ -5,14 +5,12 @@
         <p>
           projectsCollectionResponse {{ projectsCollectionResponse?.length }}
         </p>
-        <p>projectsDetailsResponse {{ projectsDetailsResponse?.length }}</p>
         <p>projectsCollection {{ projectsCollection.length }}</p>
         <p>projectsDetails {{ projectsDetails.length }}</p>
         <p>projectsUpdatedSince {{ projectsUpdatedSince.length }}</p>
         <p>itemsPerPage {{ itemsPerPage }}</p>
         <p>lastDays {{ lastDays }}</p>
         <p>updatedSince {{ updatedSince }}</p>
-        <p>error {{ error }}</p>
         <NuxtPage />
       </v-container>
     </v-app>
@@ -43,7 +41,6 @@ const { data: projectsCollectionResponse, status: projectsCollectionStatus } =
     async () => {
       let response;
       try {
-        console.log("1: before fetch projects", updatedSince.value);
         response = await $fetch("/api/projects", {
           query: {
             updatedSince: updatedSince.value,
@@ -106,15 +103,9 @@ watch(
   { immediate: true },
 );
 
-const {
-  data: projectsDetailsResponse,
-  status: projectsDetailsStatus,
-  error,
-} = await useAsyncData(
+await useAsyncData(
   "projectsDetails",
   async () => {
-    const projectDetailsList = [];
-
     for (const project of projectsCollection.value) {
       const alreadyExists = projectsDetails.value.find(
         (p) => p.projectId === project.projectId,
@@ -140,45 +131,31 @@ const {
       }
 
       if (response?.project) {
-        projectDetailsList.push(response.project);
+        const alreadyExists = projectsDetails.value.find(
+          (p) => p.projectId === project.projectId,
+        );
+
+        if (alreadyExists) {
+          console.log(
+            "already existing! not updating projectsDetails",
+            project.projectId,
+          );
+          continue;
+        }
+
+        console.log("updating projectsDetails", project.projectId);
+
+        if (response.project) {
+          projectsDetails.value.push(response.project);
+        }
       }
     }
 
-    return projectDetailsList;
+    return true;
   },
   {
     lazy: true,
     watch: [computed(() => projectsCollection.value.length)],
   },
-);
-
-watch(
-  projectsDetailsStatus,
-  (newStatus) => {
-    apiStatus.value = newStatus;
-  },
-  { immediate: true },
-);
-
-watch(
-  projectsDetailsResponse,
-  (projectsDetailsResponse) => {
-    for (const project of projectsDetailsResponse) {
-      const alreadyExists = projectsDetails.value.find(
-        (p) => p.projectId === project.projectId,
-      );
-
-      if (alreadyExists) {
-        console.log(
-          "already existing! not updating projectsDetails",
-          project.projectId,
-        );
-        continue;
-      }
-
-      projectsDetails.value.push(project);
-    }
-  },
-  { immediate: true },
 );
 </script>
