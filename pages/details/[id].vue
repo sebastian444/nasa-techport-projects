@@ -130,6 +130,8 @@
 <script setup>
 const route = useRoute();
 
+console.log("------------------ route", route.name, route.path);
+
 const projectsDetails = useProjectsDetails();
 
 const project = projectsDetails.value.find((p) => {

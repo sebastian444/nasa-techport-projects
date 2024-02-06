@@ -2,15 +2,17 @@
   <NuxtLayout>
     <v-app>
       <v-container>
-        <p>
-          projectsCollectionResponse {{ projectsCollectionResponse?.length }}
-        </p>
-        <p>projectsCollection {{ projectsCollection.length }}</p>
-        <p>projectsDetails {{ projectsDetails.length }}</p>
-        <p>projectsUpdatedSince {{ projectsUpdatedSince.length }}</p>
-        <p>itemsPerPage {{ itemsPerPage }}</p>
-        <p>lastDays {{ lastDays }}</p>
-        <p>updatedSince {{ updatedSince }}</p>
+        <div v-if="debugMode">
+          <p>
+            projectsCollectionResponse {{ projectsCollectionResponse?.length }}
+          </p>
+          <p>projectsCollection {{ projectsCollection.length }}</p>
+          <p>projectsDetails {{ projectsDetails.length }}</p>
+          <p>projectsUpdatedSince {{ projectsUpdatedSince.length }}</p>
+          <p>itemsPerPage {{ itemsPerPage }}</p>
+          <p>lastDays {{ lastDays }}</p>
+          <p>updatedSince {{ updatedSince }}</p>
+        </div>
         <NuxtPage />
       </v-container>
     </v-app>
@@ -19,6 +21,8 @@
 
 <script setup>
 import { DateTime } from "luxon";
+const debugMode = process.env.NODE_ENV !== "production";
+const logger = new Logger("app", debugMode);
 const projectsCollection = useProjectsCollection();
 const projectsDetails = useProjectsDetails();
 const projectsUpdatedSince = useProjectsUpdatedSince();
@@ -49,7 +53,7 @@ const { data: projectsCollectionResponse, status: projectsCollectionStatus } =
       } catch (error) {
         const msg = `Could not fetch projects`;
 
-        console.error(msg, error);
+        logger.error(msg, error);
 
         throw new Error(msg);
       }
@@ -85,19 +89,19 @@ watch(
         );
 
         if (alreadyExists) {
-          console.log(
+          logger.info(
             "already existing! not updating projectsCollection",
             project.projectId,
           );
           continue;
         }
 
-        console.log("updating projectsCollection", project.projectId);
+        logger.info("updating projectsCollection", project.projectId);
 
         projectsCollection.value.push(project);
       }
     } catch (error) {
-      console.error(error);
+      logger.error(error);
     }
   },
   { immediate: true },
@@ -112,7 +116,7 @@ await useAsyncData(
       );
 
       if (alreadyExists) {
-        console.log(
+        logger.info(
           "already existing! not fetching details",
           project.projectId,
         );
@@ -125,7 +129,7 @@ await useAsyncData(
       } catch (error) {
         const msg = `Could not fetch project details`;
 
-        console.error(msg, project.projectId, error);
+        logger.error(msg, project.projectId, error);
 
         throw new Error(msg);
       }
@@ -136,14 +140,14 @@ await useAsyncData(
         );
 
         if (alreadyExists) {
-          console.log(
+          logger.info(
             "already existing! not updating projectsDetails",
             project.projectId,
           );
           continue;
         }
 
-        console.log("updating projectsDetails", project.projectId);
+        logger.info("updating projectsDetails", project.projectId);
 
         if (response.project) {
           projectsDetails.value.push(response.project);

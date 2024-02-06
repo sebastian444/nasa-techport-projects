@@ -49,6 +49,10 @@ const lastDays = useLastDays();
 const apiStatus = useApiStatus();
 const page = usePage();
 
+const route = useRoute();
+
+console.log("------------------ route", route.name, route.path);
+
 const items = [10, 25, 50];
 
 const itemsPerPage = useItemsPerPage();
