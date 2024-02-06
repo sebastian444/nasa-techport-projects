@@ -127,6 +127,6 @@ export interface ResponsibleMd {
   organizationTypePretty: string;
 }
 
-export const useProjects = () => {
-  return useState<Project[]>("projects", () => []);
+export const useProjectsDetails = () => {
+  return useState<Project[]>("projectsDetails", () => []);
 };

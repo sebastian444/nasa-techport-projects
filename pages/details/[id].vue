@@ -130,11 +130,11 @@
 <script setup>
 const route = useRoute();
 
-const projects = useProjects();
+const projectsDetails = useProjectsDetails();
 
-const match = projects.value.find((p) => {
-  return p.projectId === parseInt(route.params.id);
+const project = computed(() => {
+  return projectsDetails.value.find((p) => {
+    return p.projectId === parseInt(route.params.id);
+  });
 });
-
-const project = ref(match);
 </script>
