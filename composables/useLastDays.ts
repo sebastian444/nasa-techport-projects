@@ -1,3 +1,3 @@
 export const useLastDays = () => {
-  return useState<string>("lastDays", () => "7");
+  return useState<string>("lastDays", () => "0"); // TODO: Change back to 7!!!
 };

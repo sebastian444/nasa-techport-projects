@@ -1,0 +1,19 @@
+root: true
+parser: vue-eslint-parser
+parserOptions:
+  parser: "@typescript-eslint/parser"
+extends:
+  - "plugin:vue/vue3-essential"
+  - "eslint:recommended"
+  - "@vue/eslint-config-typescript"
+  - "@vue/eslint-config-prettier/skip-formatting"
+  - prettier
+plugins:
+  - prettier
+rules:
+  prettier/prettier: error
+  "vue/multi-word-component-names": "off"
+  "import/extensions": "off"
+  "import/no-default-export": "off"
+globals:
+  window: true

@@ -23,6 +23,7 @@
   <div class="d-flex flex-wrap">
     <project-item
       v-for="project in pageItems"
+      :key="project.projectId"
       :projectId="project.projectId"
       :lastUpdated="project.lastUpdated"
     />
