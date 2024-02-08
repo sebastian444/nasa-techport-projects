@@ -128,13 +128,82 @@
 </template>
 
 <script setup>
+// COMPOSABLES
 const route = useRoute();
-
-console.log("------------------ route", route.name, route.path);
-
+const debugMode = useDebugMode();
+const projectsCollection = useProjectsCollection();
 const projectsDetails = useProjectsDetails();
 
-const project = projectsDetails.value.find((p) => {
+// LOCAL
+const logger = new Logger("index", debugMode.value);
+
+const project = ref();
+
+const match = projectsDetails.value.find((p) => {
   return p.projectId === parseInt(route.params.id);
 });
+
+if (match) {
+  logger.info('match found!', match)
+  /**
+   * This is when user navigated from index page
+   * and details is already available
+   */
+  project.value = match;
+} else {
+  await useAsyncData(
+    "projectsDetails",
+    async () => {
+      logger.info("will fetch details");
+      let response;
+      try {
+        response = await $fetch(`/api/projects/${route.params.id}`);
+      } catch (error) {
+        const msg = `Could not fetch project details`;
+
+        logger.error(msg, project.projectId, error);
+
+        throw new Error(msg);
+      }
+
+      if (response?.project) {
+        const alreadyExists = projectsDetails.value.find(
+          (p) => p.projectId === project.projectId
+        );
+
+        if (alreadyExists) {
+          logger.info(
+            "already existing! not updating projectsDetails",
+            project.projectId
+          );
+          return true;
+        }
+
+        if (response.project) {
+          /**
+           * Save to projectsCollection and projectsDetails
+           *  In case user go to index page, then is in the state already
+           * 
+           * Also update local project, so page load.
+           */
+          const alreadyExistsInCollection = projectsCollection.value.find(
+            (p) => p.projectId === project.projectId
+          );
+
+          if (!alreadyExistsInCollection) {
+            projectsCollection.value.push(response.project);
+          }
+
+          projectsDetails.value.push(response.project);
+          project.value = response.project;
+        }
+      }
+
+      return true;
+    },
+    {
+      watch: [route.params.id],
+    }
+  );
+}
 </script>

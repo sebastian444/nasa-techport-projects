@@ -37,6 +37,7 @@
     "@types/luxon": "^3.4.2",
     "eslint-plugin-vue": "^9.21.1",
     "happy-dom": "^13.3.8",
+    "lodash.debounce": "^4.0.8",
     "luxon": "^3.4.4"
   }
 }

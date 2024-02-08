@@ -3,7 +3,7 @@ enum Level {
   error = "error",
 }
 
-export const Logger = class Logger {
+export const ServerLogger = class ServerLogger {
   module: string;
   loggerEnabled: boolean;
 
