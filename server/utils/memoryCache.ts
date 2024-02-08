@@ -1,8 +1,7 @@
 export const MemoryCache = class MemoryCache {
   name: string;
-
   #cache: Map<string, any>;
-  logger: any;
+  logger;
 
   constructor(name: string) {
     this.name = name;
@@ -28,7 +27,7 @@ export const MemoryCache = class MemoryCache {
   set(key: string, data: any) {
     if (this.has(key)) {
       this.logger.info(
-        `key: ${key} already existing, proceeding to overwrite!`,
+        `key: ${key} already existing, proceeding to overwrite!`
       );
     }
 

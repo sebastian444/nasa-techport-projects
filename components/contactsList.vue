@@ -16,6 +16,6 @@
 <script setup>
 const props = defineProps({
   title: String,
-  contacts: Array,
+  contacts: Array
 });
 </script>

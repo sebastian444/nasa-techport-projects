@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     return detailsCache.get(updatedSince);
   } else {
     const response = await $fetch("https://techport.nasa.gov/api/projects", {
-      params: { updatedSince },
+      params: { updatedSince }
     });
 
     detailsCache.set(updatedSince, response);

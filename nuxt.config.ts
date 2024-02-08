@@ -4,15 +4,15 @@ import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
 export default defineNuxtConfig({
   devtools: { enabled: true },
   devServer: {
-    port: 3000,
+    port: 3000
   },
   runtimeConfig: {
     public: {
-      techportToken: process.env.TECHPORT_TOKEN,
-    },
+      techportToken: process.env.TECHPORT_TOKEN
+    }
   },
   build: {
-    transpile: ["vuetify"],
+    transpile: ["vuetify"]
   },
   modules: [
     "@nuxt/test-utils/module",
@@ -21,14 +21,14 @@ export default defineNuxtConfig({
         // @ts-expect-error
         config.plugins.push(vuetify({}));
       });
-    },
+    }
     //...
   ],
   vite: {
     vue: {
       template: {
-        transformAssetUrls,
-      },
-    },
-  },
+        transformAssetUrls
+      }
+    }
+  }
 });

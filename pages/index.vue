@@ -78,9 +78,8 @@ const lastDaysLocal = ref(lastDays);
 watch(
   lastDaysLocal,
   debounce((newValue) => {
-    logger.info("--- lastDays will be updated");
-    lastDays.newValue = newValue;
-  }, 500),
+    lastDays.value = newValue;
+  }, 500)
 );
 
 // COMPUTEDS
@@ -109,7 +108,7 @@ watch(
       page.value = newPaginationLength;
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 const { data: projectsCollectionResponse, status: projectsCollectionStatus } =
@@ -120,8 +119,8 @@ const { data: projectsCollectionResponse, status: projectsCollectionStatus } =
       try {
         response = await $fetch("/api/projects", {
           query: {
-            updatedSince: updatedSince.value,
-          },
+            updatedSince: updatedSince.value
+          }
         });
       } catch (error) {
         const msg = `Could not fetch projects`;
@@ -134,11 +133,11 @@ const { data: projectsCollectionResponse, status: projectsCollectionStatus } =
       return (
         response.projects?.map((p) => ({
           projectId: p.projectId,
-          lastUpdated: p.lastUpdated,
+          lastUpdated: p.lastUpdated
         })) || []
       );
     },
-    { watch: [updatedSince] },
+    { watch: [updatedSince] }
   );
 
 watch(
@@ -146,7 +145,7 @@ watch(
   (newStatus) => {
     apiStatus.value = newStatus;
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 watch(
@@ -158,18 +157,12 @@ watch(
     try {
       for (const project of projectsCollectionResponse) {
         const alreadyExists = projectsCollection.value.find(
-          (p) => p.projectId === project.projectId,
+          (p) => p.projectId === project.projectId
         );
 
         if (alreadyExists) {
-          logger.info(
-            "already existing! not updating projectsCollection",
-            project.projectId,
-          );
           continue;
         }
-
-        logger.info("updating projectsCollection", project.projectId);
 
         projectsCollection.value.push(project);
       }
@@ -177,7 +170,7 @@ watch(
       logger.error(error);
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 await useAsyncData(
@@ -185,13 +178,13 @@ await useAsyncData(
   async () => {
     for (const project of pageItems.value) {
       const alreadyExists = projectsDetails.value.find(
-        (p) => p.projectId === project.projectId,
+        (p) => p.projectId === project.projectId
       );
 
       if (alreadyExists) {
         logger.info(
           "already existing! not fetching details",
-          project.projectId,
+          project.projectId
         );
         continue;
       }
@@ -209,13 +202,13 @@ await useAsyncData(
 
       if (response?.project) {
         const alreadyExists = projectsDetails.value.find(
-          (p) => p.projectId === project.projectId,
+          (p) => p.projectId === project.projectId
         );
 
         if (alreadyExists) {
           logger.info(
             "already existing! not updating projectsDetails",
-            project.projectId,
+            project.projectId
           );
           continue;
         }
@@ -232,7 +225,7 @@ await useAsyncData(
   },
   {
     lazy: true,
-    watch: [pageItems],
-  },
+    watch: [pageItems]
+  }
 );
 </script>

@@ -8,8 +8,8 @@ export default defineVitestConfig({
     exclude: [...configDefaults.exclude, "**/*.d.ts"],
     server: {
       deps: {
-        inline: ["vuetify"],
-      },
+        inline: ["vuetify"]
+      }
     },
     coverage: {
       provider: "v8",
@@ -19,8 +19,8 @@ export default defineVitestConfig({
         "**/*.d.ts",
         "**/.nuxt/**",
         "**/composables/**",
-        "**/plugins/**",
-      ],
-    },
-  },
+        "**/plugins/**"
+      ]
+    }
+  }
 });

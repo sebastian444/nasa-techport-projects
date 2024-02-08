@@ -168,13 +168,13 @@ if (match) {
 
       if (response?.project) {
         const alreadyExists = projectsDetails.value.find(
-          (p) => p.projectId === project.projectId,
+          (p) => p.projectId === project.projectId
         );
 
         if (alreadyExists) {
           logger.info(
             "already existing! not updating projectsDetails",
-            project.projectId,
+            project.projectId
           );
           return true;
         }
@@ -187,7 +187,7 @@ if (match) {
            * Also update local project, so page load.
            */
           const alreadyExistsInCollection = projectsCollection.value.find(
-            (p) => p.projectId === project.projectId,
+            (p) => p.projectId === project.projectId
           );
 
           if (!alreadyExistsInCollection) {
@@ -202,8 +202,8 @@ if (match) {
       return true;
     },
     {
-      watch: [route.params.id],
-    },
+      watch: [route.params.id]
+    }
   );
 }
 </script>

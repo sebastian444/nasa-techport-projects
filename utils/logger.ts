@@ -1,6 +1,6 @@
 enum Level {
   info = "log",
-  error = "error",
+  error = "error"
 }
 
 export const Logger = class Logger {
@@ -12,11 +12,11 @@ export const Logger = class Logger {
     this.loggerEnabled = loggerEnabled;
   }
 
-  info(message: string, data: any) {
+  info(message: string, data?: any) {
     this.#buildLogByLevel(Level.info, message, data);
   }
 
-  error(message: string, data: any) {
+  error(message: string, data?: any) {
     this.#buildLogByLevel(Level.error, message, data);
 
     if (this.loggerEnabled) {
@@ -24,9 +24,15 @@ export const Logger = class Logger {
     }
   }
 
-  #buildLogByLevel(level: Level, message: string, data: any) {
+  #buildLogByLevel(level: Level, message: string, data?: any) {
     if (this.loggerEnabled) {
-      console[level](this.#buildMessage(message), data);
+      const args = [this.#buildMessage(message)];
+
+      if (data) {
+        args.push(data);
+      }
+
+      console[level].apply(null, args);
     }
   }
 

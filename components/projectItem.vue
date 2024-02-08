@@ -27,7 +27,7 @@
 <script setup>
 const props = defineProps({
   projectId: Number,
-  lastUpdated: String,
+  lastUpdated: String
 });
 const projectsDetails = useProjectsDetails();
 

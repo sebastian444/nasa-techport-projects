@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
     return detailsCache.get(projectIdParam);
   } else {
     const response: any = await $fetch(
-      `https://techport.nasa.gov/api/projects/${projectIdParam}`,
+      `https://techport.nasa.gov/api/projects/${projectIdParam}`
     );
 
     let prunedObject: any;
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
         projectManagers,
         programManagers,
         principalInvestigators,
-        coInvestigators,
+        coInvestigators
       } = (response as any).project || {};
 
       prunedObject = {
@@ -40,28 +40,28 @@ export default defineEventHandler(async (event) => {
           title,
           benefits,
           description,
-          website,
-        },
+          website
+        }
       };
 
       if (program) {
         prunedObject.project.program = {
           title: program.title,
-          description: program.description,
+          description: program.description
         };
       }
 
       if (leadOrganization) {
         prunedObject.project.leadOrganization = {
           organizationName: leadOrganization.organizationName,
-          organizationTypePretty: leadOrganization.organizationTypePretty,
+          organizationTypePretty: leadOrganization.organizationTypePretty
         };
       }
 
       if (responsibleMd) {
         prunedObject.project.responsibleMd = {
           organizationName: responsibleMd.organizationName,
-          organizationTypePretty: responsibleMd.organizationTypePretty,
+          organizationTypePretty: responsibleMd.organizationTypePretty
         };
       }
 
@@ -70,8 +70,8 @@ export default defineEventHandler(async (event) => {
           ({ contactId, fullName, primaryEmail }: any) => ({
             contactId,
             fullName,
-            primaryEmail,
-          }),
+            primaryEmail
+          })
         );
       }
 
@@ -80,8 +80,8 @@ export default defineEventHandler(async (event) => {
           ({ contactId, fullName, primaryEmail }: any) => ({
             contactId,
             fullName,
-            primaryEmail,
-          }),
+            primaryEmail
+          })
         );
       }
 
@@ -91,8 +91,8 @@ export default defineEventHandler(async (event) => {
             ({ contactId, fullName, primaryEmail }: any) => ({
               contactId,
               fullName,
-              primaryEmail,
-            }),
+              primaryEmail
+            })
           );
       }
 
@@ -101,8 +101,8 @@ export default defineEventHandler(async (event) => {
           ({ contactId, fullName, primaryEmail }: any) => ({
             contactId,
             fullName,
-            primaryEmail,
-          }),
+            primaryEmail
+          })
         );
       }
     } catch (error) {
