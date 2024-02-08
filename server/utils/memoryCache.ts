@@ -18,7 +18,7 @@ export const MemoryCache = class MemoryCache {
 
   get(key: string): any {
     if (this.has(key)) {
-      console.log("cache found for:   ", key);
+      this.logger.info("cache found for:   ", key);
       return JSON.parse(this.#cache.get(key));
     }
 
