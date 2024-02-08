@@ -66,6 +66,8 @@ const apiStatus = useApiStatus();
 const page = usePage();
 const itemsPerPage = useItemsPerPage();
 const debugMode = useDebugMode();
+const router = useRouter();
+const route = useRoute();
 
 // LOCAL DATA
 const logger = new Logger("index", debugMode.value);
@@ -166,6 +168,14 @@ watch(
 
         projectsCollection.value.push(project);
       }
+
+      if (route.query.page) {
+        page.value = parseInt(route.query.page);
+      }
+
+      if (route.query.itemsPerPage) {
+        itemsPerPage.value = parseInt(route.query.itemsPerPage);
+      }
     } catch (error) {
       logger.error(error);
     }
@@ -213,8 +223,6 @@ await useAsyncData(
           continue;
         }
 
-        logger.info("updating projectsDetails", project.projectId);
-
         if (response.project) {
           projectsDetails.value.push(response.project);
         }
@@ -227,5 +235,18 @@ await useAsyncData(
     lazy: true,
     watch: [pageItems]
   }
+);
+
+watch(
+  [lastDaysLocal, page, itemsPerPage],
+  debounce(([newLastDaysLocal, newPage, newItemsPerPage]) => {
+    router.replace({
+      query: {
+        page: newPage,
+        itemsPerPage: newItemsPerPage,
+        lastDays: newLastDaysLocal
+      }
+    });
+  }, 1000)
 );
 </script>
