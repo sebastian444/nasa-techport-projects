@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
         programManagers,
         principalInvestigators,
         coInvestigators,
-      } = ((response as any).project = {});
+      } = (response as any).project || {};
 
       prunedObject = {
         project: {
