@@ -102,6 +102,16 @@ const updatedSince = computed(() => {
     .toFormat(dateFormat);
 });
 
+watch(
+  paginationLength,
+  (newPaginationLength) => {
+    if (page.value > newPaginationLength) {
+      page.value = newPaginationLength;
+    }
+  },
+  { immediate: true },
+);
+
 const { data: projectsCollectionResponse, status: projectsCollectionStatus } =
   await useAsyncData(
     "projectsCollection",
@@ -173,7 +183,7 @@ watch(
 await useAsyncData(
   "projectsDetails",
   async () => {
-    for (const project of projectsCollection.value) {
+    for (const project of pageItems.value) {
       const alreadyExists = projectsDetails.value.find(
         (p) => p.projectId === project.projectId,
       );
@@ -222,7 +232,7 @@ await useAsyncData(
   },
   {
     lazy: true,
-    watch: [computed(() => projectsCollection.value.length)],
+    watch: [pageItems],
   },
 );
 </script>
