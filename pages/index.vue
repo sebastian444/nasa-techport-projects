@@ -64,7 +64,6 @@ const projectsDetails = useProjectsDetails();
 const lastDays = useLastDays();
 const apiStatus = useApiStatus();
 const page = usePage();
-const route = useRoute();
 const itemsPerPage = useItemsPerPage();
 const debugMode = useDebugMode();
 
@@ -81,7 +80,7 @@ watch(
   debounce((newValue) => {
     logger.info("--- lastDays will be updated");
     lastDays.newValue = newValue;
-  }, 500)
+  }, 500),
 );
 
 // COMPUTEDS
@@ -129,7 +128,7 @@ const { data: projectsCollectionResponse, status: projectsCollectionStatus } =
         })) || []
       );
     },
-    { watch: [updatedSince] }
+    { watch: [updatedSince] },
   );
 
 watch(
@@ -137,7 +136,7 @@ watch(
   (newStatus) => {
     apiStatus.value = newStatus;
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
@@ -149,13 +148,13 @@ watch(
     try {
       for (const project of projectsCollectionResponse) {
         const alreadyExists = projectsCollection.value.find(
-          (p) => p.projectId === project.projectId
+          (p) => p.projectId === project.projectId,
         );
 
         if (alreadyExists) {
           logger.info(
             "already existing! not updating projectsCollection",
-            project.projectId
+            project.projectId,
           );
           continue;
         }
@@ -168,7 +167,7 @@ watch(
       logger.error(error);
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 await useAsyncData(
@@ -176,13 +175,13 @@ await useAsyncData(
   async () => {
     for (const project of projectsCollection.value) {
       const alreadyExists = projectsDetails.value.find(
-        (p) => p.projectId === project.projectId
+        (p) => p.projectId === project.projectId,
       );
 
       if (alreadyExists) {
         logger.info(
           "already existing! not fetching details",
-          project.projectId
+          project.projectId,
         );
         continue;
       }
@@ -200,13 +199,13 @@ await useAsyncData(
 
       if (response?.project) {
         const alreadyExists = projectsDetails.value.find(
-          (p) => p.projectId === project.projectId
+          (p) => p.projectId === project.projectId,
         );
 
         if (alreadyExists) {
           logger.info(
             "already existing! not updating projectsDetails",
-            project.projectId
+            project.projectId,
           );
           continue;
         }
@@ -224,6 +223,6 @@ await useAsyncData(
   {
     lazy: true,
     watch: [computed(() => projectsCollection.value.length)],
-  }
+  },
 );
 </script>

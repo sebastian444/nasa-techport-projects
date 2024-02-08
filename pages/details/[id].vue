@@ -144,7 +144,7 @@ const match = projectsDetails.value.find((p) => {
 });
 
 if (match) {
-  logger.info('match found!', match)
+  logger.info("match found!", match);
   /**
    * This is when user navigated from index page
    * and details is already available
@@ -168,13 +168,13 @@ if (match) {
 
       if (response?.project) {
         const alreadyExists = projectsDetails.value.find(
-          (p) => p.projectId === project.projectId
+          (p) => p.projectId === project.projectId,
         );
 
         if (alreadyExists) {
           logger.info(
             "already existing! not updating projectsDetails",
-            project.projectId
+            project.projectId,
           );
           return true;
         }
@@ -183,11 +183,11 @@ if (match) {
           /**
            * Save to projectsCollection and projectsDetails
            *  In case user go to index page, then is in the state already
-           * 
+           *
            * Also update local project, so page load.
            */
           const alreadyExistsInCollection = projectsCollection.value.find(
-            (p) => p.projectId === project.projectId
+            (p) => p.projectId === project.projectId,
           );
 
           if (!alreadyExistsInCollection) {
@@ -203,7 +203,7 @@ if (match) {
     },
     {
       watch: [route.params.id],
-    }
+    },
   );
 }
 </script>
