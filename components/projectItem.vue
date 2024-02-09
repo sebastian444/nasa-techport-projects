@@ -10,7 +10,7 @@
       </slot>
       <slot name="actions">
         <v-card-actions>
-          <v-btn nuxt :to="`/details/${projectDetailsMatch.projectId}`">
+          <v-btn :to="`/details/${projectDetailsMatch.projectId}`">
             Details
           </v-btn>
         </v-card-actions>

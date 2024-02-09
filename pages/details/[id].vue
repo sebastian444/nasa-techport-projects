@@ -1,7 +1,6 @@
 <template>
   <v-btn
     class="mb-4"
-    nuxt
     to="/"
     icon="mdi-backburger"
     size="small"

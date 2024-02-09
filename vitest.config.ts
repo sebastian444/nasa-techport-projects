@@ -6,11 +6,6 @@ export default defineVitestConfig({
     environment: "nuxt",
     globals: true,
     exclude: [...configDefaults.exclude, "**/*.d.ts"],
-    server: {
-      deps: {
-        inline: ["vuetify"]
-      }
-    },
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
