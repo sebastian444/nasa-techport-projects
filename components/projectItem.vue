@@ -1,5 +1,5 @@
 <template>
-  <v-card width="200" class="ma-2">
+  <v-card width="200" class="ma-2" height="120">
     <slot name="subtitle">
       <v-card-subtitle> {{ props?.lastUpdated }}</v-card-subtitle>
     </slot>
