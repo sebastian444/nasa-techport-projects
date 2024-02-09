@@ -20,9 +20,12 @@
       </v-col>
       <v-col>
         <v-text-field
+          type="number"
+          min="0"
           class="flex-grow-0"
           label="Last days"
-          v-model="lastDaysLocal"
+          v-model.number="lastDaysLocal"
+          :rules="[rules.required, rules.noNegative]"
           hide-details="auto"
         ></v-text-field>
       </v-col>
@@ -76,12 +79,26 @@ const todayDate = DateTime.now();
 const items = [10, 25, 50];
 
 const lastDaysLocal = ref(lastDays);
+const lastDaysIsValid = ref(true);
+
+const rules = reactive({
+  required: (value) => !!value || "Field is required!",
+  noNegative: (value) => {
+    if (value < 0) {
+      lastDaysIsValid.value = false;
+      return "No negative values allowed!";
+    }
+
+    lastDaysIsValid.value = true;
+    return true;
+  }
+});
 
 watch(
   lastDaysLocal,
   debounce((newValue) => {
     lastDays.value = newValue;
-  }, 500)
+  }, 1000)
 );
 
 // COMPUTEDS
@@ -98,9 +115,19 @@ const pageItems = computed(() => {
 });
 
 const updatedSince = computed(() => {
-  return todayDate
-    .minus({ days: parseInt(lastDays.value) || 0 })
-    .toFormat(dateFormat);
+  let days = 0;
+
+  const lastDaysParsed = parseInt(lastDays.value);
+
+  if (
+    lastDaysIsValid.value === true &&
+    Number.isInteger(lastDaysParsed) &&
+    lastDaysParsed > 0
+  ) {
+    days = lastDaysParsed;
+  }
+
+  return todayDate.minus({ days }).toFormat(dateFormat);
 });
 
 watch(
@@ -118,6 +145,10 @@ const { data: projectsCollectionResponse, status: projectsCollectionStatus } =
     "projectsCollection",
     async () => {
       let response;
+      if (!lastDaysIsValid.value) {
+        return [];
+      }
+
       try {
         response = await $fetch("/api/projects", {
           query: {
@@ -240,13 +271,15 @@ await useAsyncData(
 watch(
   [lastDaysLocal, page, itemsPerPage],
   debounce(([newLastDaysLocal, newPage, newItemsPerPage]) => {
-    router.replace({
-      query: {
-        page: newPage,
-        itemsPerPage: newItemsPerPage,
-        lastDays: newLastDaysLocal
-      }
-    });
-  }, 1000)
+    if (lastDaysIsValid.value) {
+      router.replace({
+        query: {
+          page: newPage,
+          itemsPerPage: newItemsPerPage,
+          lastDays: newLastDaysLocal
+        }
+      });
+    }
+  }, 1500)
 );
 </script>
