@@ -82,7 +82,13 @@ const lastDaysLocal = ref(lastDays);
 const lastDaysIsValid = ref(true);
 
 const rules = reactive({
-  required: (value) => !!value || "Field is required!",
+  required: (value) => {
+    if (!value && value !== 0) {
+      return "Field is required!";
+    }
+
+    return true;
+  },
   noNegative: (value) => {
     if (value < 0) {
       lastDaysIsValid.value = false;
