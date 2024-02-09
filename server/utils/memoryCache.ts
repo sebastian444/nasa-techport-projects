@@ -1,3 +1,5 @@
+import { ServerLogger } from "./serverLogger";
+
 export const MemoryCache = class MemoryCache {
   name: string;
   #cache: Map<string, any>;

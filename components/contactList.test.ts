@@ -9,7 +9,7 @@ interface LocalTestContext {
 
 global.ResizeObserver = require("resize-observer-polyfill");
 
-describe("ContactList", () => {
+describe("ContactList", function () {
   suite("Given title and empty contacts", function () {
     beforeEach<LocalTestContext>(async function (context) {
       context.component = await mountSuspended(ContactList, {
