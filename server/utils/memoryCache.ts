@@ -1,3 +1,4 @@
+import { CronJob } from "cron";
 import { ServerLogger } from "./serverLogger";
 
 export const MemoryCache = class MemoryCache {
@@ -11,6 +12,8 @@ export const MemoryCache = class MemoryCache {
     this.logger = new ServerLogger(`MemoryCache:${name}`);
 
     this.logger.info("Starting!");
+
+    this.flushCacheJob();
   }
 
   has(key: string) {
@@ -39,6 +42,19 @@ export const MemoryCache = class MemoryCache {
   }
 
   flush() {
+    this.logger.info("... clearing cache!");
     this.#cache.clear();
+  }
+
+  flushCacheJob() {
+    this.logger.info("Starting Kronjob to clean cache every day at 03:00");
+
+    const job = CronJob.from({
+      cronTime: "0 3 * * *",
+      onTick: () => {
+        this.flush();
+      },
+      start: true
+    });
   }
 };
